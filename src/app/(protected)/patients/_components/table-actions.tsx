@@ -3,7 +3,7 @@ import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 
-// import { deletePatient } from "@/actions/delete-patient";
+import { deletePatient } from "@/actions/delete-patient";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,39 +36,45 @@ interface PatientsTableActionsProps {
 const PatientsTableActions = ({ patient }: PatientsTableActionsProps) => {
   const [upsertDialogIsOpen, setUpsertDialogIsOpen] = useState(false);
 
-  //   const deletePatientAction = useAction(deletePatient, {
-  //     onSuccess: () => {
-  //       toast.success("Paciente deletado com sucesso.");
-  //     },
-  //     onError: () => {
-  //       toast.error("Erro ao deletar paciente.");
-  //     },
-  //   });
+  const deletePatientAction = useAction(deletePatient, {
+    onSuccess: () => {
+      toast.success("Paciente deletado com sucesso.");
+    },
+    onError: () => {
+      toast.error("Erro ao deletar paciente.");
+    },
+  });
 
-  //   const handleDeletePatientClick = () => {
-  //     if (!patient) return;
-  //     deletePatientAction.execute({ id: patient.id });
-  //   };
+  const handleDeletePatientClick = () => {
+    if (!patient) return;
+    deletePatientAction.execute({ id: patient.id });
+  };
 
   return (
     <>
       <Dialog open={upsertDialogIsOpen} onOpenChange={setUpsertDialogIsOpen}>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="cursor-pointer">
               <MoreVerticalIcon className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>{patient.name}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setUpsertDialogIsOpen(true)}>
+            <DropdownMenuItem
+              onClick={() => setUpsertDialogIsOpen(true)}
+              className="cursor-pointer"
+            >
               <EditIcon />
               Editar
             </DropdownMenuItem>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className="cursor-pointer"
+                >
                   <TrashIcon />
                   Excluir
                 </DropdownMenuItem>
@@ -84,8 +90,15 @@ const PatientsTableActions = ({ patient }: PatientsTableActionsProps) => {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction>Deletar</AlertDialogAction>
+                  <AlertDialogCancel className="cursor-pointer">
+                    Cancelar
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    className="cursor-pointer"
+                    onClick={handleDeletePatientClick}
+                  >
+                    Deletar
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
