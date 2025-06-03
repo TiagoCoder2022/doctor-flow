@@ -39,6 +39,7 @@ export const getAvailableTimes = actionClient
     if (!doctor) {
       throw new Error("Médico não encontrado");
     }
+    //Verifica se o médico está disponível na data selecionada se nao estiver retorna um array vazio
     const selectedDayOfWeek = dayjs(parsedInput.date).day();
     const doctorIsAvailable =
       selectedDayOfWeek >= doctor.availableFromWeekDay &&
@@ -46,6 +47,7 @@ export const getAvailableTimes = actionClient
     if (!doctorIsAvailable) {
       return [];
     }
+    // verifica quais agendamentos ele tem na data selecionada
     const appointments = await db.query.appointmentsTable.findMany({
       where: eq(appointmentsTable.doctorId, parsedInput.doctorId),
     });
@@ -56,6 +58,7 @@ export const getAvailableTimes = actionClient
       .map((appointment) => dayjs(appointment.date).format("HH:mm:ss"));
     const timeSlots = generateTimeSlots();
 
+    // Converte o horário de disponibilidade do médico para o horário local
     const doctorAvailableFrom = dayjs()
       .utc()
       .set("hour", Number(doctor.availableFromTime.split(":")[0]))
@@ -68,6 +71,8 @@ export const getAvailableTimes = actionClient
       .set("minute", Number(doctor.availableToTime.split(":")[1]))
       .set("second", 0)
       .local();
+
+    //Gera os TimesSlot e veririfca quais desses horários já tem agendamento e quais deles estao na dentro da disponibilidade
     const doctorTimeSlots = timeSlots.filter((time) => {
       const date = dayjs()
         .utc()
@@ -80,6 +85,8 @@ export const getAvailableTimes = actionClient
         date.format("HH:mm:ss") <= doctorAvailableTo.format("HH:mm:ss")
       );
     });
+
+    //Retorna os horários que estão disponíveis ou não
     return doctorTimeSlots.map((time) => {
       return {
         value: time,
