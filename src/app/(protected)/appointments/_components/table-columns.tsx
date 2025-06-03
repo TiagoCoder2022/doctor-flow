@@ -6,6 +6,8 @@ import { ptBR } from "date-fns/locale";
 
 import { appointmentsTable } from "@/db/schema";
 
+import AppointmentsTableActions from "./table-actions";
+
 // import AppointmentsTableActions from "./table-action";
 
 type AppointmentWithRelations = typeof appointmentsTable.$inferSelect & {
@@ -60,7 +62,7 @@ export const appointmentsTableColumns: ColumnDef<AppointmentWithRelations>[] = [
     header: "Valor",
     cell: (params) => {
       const appointment = params.row.original;
-      const price = appointment; //appointment.appointmentPriceInCents / 100;
+      const price = appointment.appointmentPriceInCents / 100;
       return new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL",
