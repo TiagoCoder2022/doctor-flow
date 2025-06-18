@@ -14,6 +14,7 @@ import {
 import { getDashboard } from "@/data/get-dashboard";
 import { auth } from "@/lib/auth";
 
+import AppointmentsChart from "./_components/appointments-chart";
 import { DatePicker } from "./_components/date-picker";
 import StatsCards from "./_components/stats-cards";
 
@@ -74,6 +75,9 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
           totalPatients={totalPatients.total}
           totalDoctors={totalDoctors.total}
         />
+        <div className="grid grid-cols-[2.25fr_1fr]">
+          <AppointmentsChart dailyAppointmentsData={dailyAppointmentsData} />
+        </div>
       </PageContent>
     </PageContainer>
   );
